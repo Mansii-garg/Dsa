@@ -1,0 +1,70 @@
+Given the head of a sorted linked list, delete all nodes that have duplicate numbers, leaving only distinct numbers from the original list. Return the linked list sorted as well.
+
+Example 1:
+
+Input: head = [1,2,3,3,4,4,5]
+Output: [1,2,5]
+
+Example 2:
+
+Input: head = [1,1,1,2,3]
+Output: [2,3]
+
+Code:
+ListNode* deleteDuplicates(ListNode* head) {
+        if(head == NULL || head->next == NULL){
+            return head;
+        }
+        
+        ListNode* pp = NULL;
+        ListNode* prev = head;
+        ListNode* curr = head->next;
+        bool c = false;
+        
+        while(curr != NULL){
+            if(prev->val != curr->val){
+                if(prev == head && c == true){
+                    ListNode* temp = prev;
+                    head = prev->next;
+                    //prev = curr;
+                    //curr = curr->next;
+                    delete temp;
+                    c = false;
+                }
+                else if(c == true){
+                    pp->next = curr;
+                    ListNode* temp = prev;
+                    //prev = prev->next;
+                    //curr = curr->next;
+                    delete temp;
+                    c = false;
+                }
+                else{
+                    pp = prev;
+                }
+                prev = curr;
+                curr = curr->next;
+            }
+            
+            else{
+                c = true;
+                ListNode* temp = curr;
+                prev->next = curr->next;
+                curr = curr->next;
+                delete temp;
+            }
+        }
+        
+        if(c == true){
+            if(pp)
+                pp->next = NULL;
+            else
+                head = NULL;
+            delete prev;
+        }
+        
+        return head;
+    }
+    
+    tc= O(N)
+    sc = O(1)
