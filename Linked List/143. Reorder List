@@ -80,3 +80,59 @@ public:
 
 tc = O(N)
 sc O(1)
+
+Code2:
+Node* getMiddle(Node* head){
+    if(head == NULL || head->next == NULL) return head;
+    
+    Node* slow = head;
+    Node* fast = head->next;
+    
+    while(fast && fast->next){
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    
+    return slow;
+}
+
+Node* reverse(Node* head){
+    if(head == NULL || head->next == NULL) return head;
+    
+    Node* prev = NULL;
+    Node* curr = head;
+    Node* _next = head->next;
+    
+    while(curr){
+        curr->next = prev;
+        prev = curr;
+        curr = _next;
+        if(_next){
+            _next = _next->next;
+        }
+    }
+    
+    return prev;
+}
+
+void reorderList(Node* head) {
+    // Your code here
+    if(head == NULL || head->next == NULL) return;
+    
+    Node* middle = getMiddle(head);
+    Node* head1 = head;
+    Node* head2 = reverse(middle->next);
+    middle->next = NULL;
+    Node* temp = head;
+    
+    while(head1){
+        head1 = head1->next;
+        temp->next = head2;
+        if(head2){
+            head2 = head2->next;
+            temp = temp->next;
+            temp->next = head1;
+            temp = head1;
+        }
+    }
+}
