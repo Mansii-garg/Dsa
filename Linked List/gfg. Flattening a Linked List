@@ -1,0 +1,150 @@
+Given a Linked List of size N, where every node represents a sub-linked-list and contains two pointers:
+(i) a next pointer to the next node,
+(ii) a bottom pointer to a linked list where this node is head.
+Each of the sub-linked-list is in sorted order.
+Flatten the Link List such that all the nodes appear in a single level while maintaining the sorted order. 
+Note: The flattened list will be printed using the bottom pointer instead of next pointer.
+
+Example 1:
+
+Input:
+5 -> 10 -> 19 -> 28
+|     |     |     | 
+7     20    22   35
+|           |     | 
+8          50    40
+|                 | 
+30               45
+Output:  5-> 7-> 8- > 10 -> 19-> 20->
+22-> 28-> 30-> 35-> 40-> 45-> 50.
+Explanation:
+The resultant linked lists has every 
+node in a single level.
+(Note: | represents the bottom pointer.)
+
+Example 2:
+
+Input:
+5 -> 10 -> 19 -> 28
+|          |                
+7          22   
+|          |                 
+8          50 
+|                           
+30              
+Output: 5->7->8->10->19->22->28->30->50
+Explanation:
+The resultant linked lists has every
+node in a single level.
+
+(Note: | represents the bottom pointer.)
+
+Code: 
+1. Using merge and recursion(striver video) , merging is starting from end
+Node* merge(Node* list1, Node* list2){
+        if(list1 == NULL) return list2;
+        if(list2 == NULL) return list1;
+        
+        Node* head = NULL;
+        Node* tail = NULL;
+        Node* h1 = list1;
+        Node* h2 = list2;
+        
+        while(h1 != NULL && h2 != NULL){
+            if(h1->data <= h2->data){
+                if(head == NULL)
+                    head = h1;
+                if(tail != NULL)
+                    tail->bottom = h1;
+                tail = h1;
+                h1 = h1->bottom;
+            }
+            else{
+                if(head == NULL)
+                    head = h2;
+                if(tail != NULL)
+                    tail->bottom = h2;
+                tail = h2;
+                h2 = h2->bottom;
+            }
+        }
+        
+        if(h1 == NULL) tail->bottom = h2;
+        if(h2 == NULL) tail->bottom = h1;
+        
+        return head;
+}
+
+Node *flatten(Node *root)
+{
+   // Your code here
+   if(root == NULL || root->next == NULL) return root;
+   
+   root->next = flatten(root->next);
+   
+   root = merge(root, root->next);
+   
+   return root;
+}
+
+tc = O(N*N*M)
+Explanation: As we are merging 2 lists at a time,
+
+After adding first 2 lists, time taken will be O(M+M) = O(2M).
+Then we will merge another list to above merged list -> time = O(2M + M) = O(3M).
+Then we will merge another list -> time = O(3M + M).
+We will keep merging lists to previously merged lists until all lists are merged.
+Total time taken will be O(2M + 3M + 4M + .... N*M) = (2 + 3 + 4 + ... + N)*M
+Using arithmetic sum formula: time = O((N*N + N - 2)*M/2)
+Above expression is roughly equal to O(N*N*M) for large value of N
+sc = O(N*M) recursion stack
+
+2. using priority queues
+struct mycomp {
+    bool operator()(Node* a, Node* b)
+    {
+        return a->data > b->data;
+    }
+};
+
+Node *flatten(Node *root){
+    priority_queue<Node*, vector<Node*>, mycomp> p;
+  //pushing main link nodes into priority_queue.
+    while (root!=NULL) {
+        p.push(root);
+        root = root->next;
+    }
+    
+    Node* head = NULL;
+    Node* tail = NULL;
+  
+    while (!p.empty()) {
+      //extracting min
+        auto k = p.top();
+        p.pop();
+      //printing  least element 
+        if(head == NULL)
+            head = k;
+        if(tail != NULL)
+            tail->bottom = k;
+        tail = k;
+        if (k->bottom)
+            p.push(k->bottom);
+    }
+    
+    return head;
+}
+
+tc = O(N*M*LogN)
+Explanation:
+
+1. Push all the nodes that are reachable using next pointer into priority queue till we encounter NULL. 
+
+2.while(priority_queue is not empty)
+
+        (i) Extract Node which contains minimum-value(k) from priority_queue and print k->data.
+
+        (ii) If  k->bottom!=NULL ,insert k->bottom into priority_queue. Else our priority_queue size will decrease.
+        
+sc = O(N)
+ 
