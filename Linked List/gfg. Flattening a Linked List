@@ -74,7 +74,7 @@ Node* merge(Node* list1, Node* list2){
         
         return head;
 }
-
+//recursive
 Node *flatten(Node *root)
 {
    // Your code here
@@ -87,6 +87,21 @@ Node *flatten(Node *root)
    return root;
 }
 
+//iterative
+Node *flatten(Node *root)
+{
+   if(root==NULL || root->next==NULL) return root;
+   Node* temp=root;
+   
+   while(temp->next!=NULL){
+      Node* temp1=temp->next->next;
+      temp= mergeThem(temp,temp->next);
+       temp->next=temp1;
+       
+   }
+   return temp;
+}
+
 tc = O(N*N*M)
 Explanation: As we are merging 2 lists at a time,
 
@@ -97,6 +112,7 @@ We will keep merging lists to previously merged lists until all lists are merged
 Total time taken will be O(2M + 3M + 4M + .... N*M) = (2 + 3 + 4 + ... + N)*M
 Using arithmetic sum formula: time = O((N*N + N - 2)*M/2)
 Above expression is roughly equal to O(N*N*M) for large value of N
+
 sc = O(N*M) recursion stack
 
 2. using priority queues
