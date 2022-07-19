@@ -1,0 +1,46 @@
+Given the head of a sorted linked list, delete all duplicates such that each element appears only once. Return the linked list sorted as well.
+
+Example 1:
+
+Input: head = [1,1,2]
+Output: [1,2]
+
+Example 2:
+
+Input: head = [1,1,2,3,3]
+Output: [1,2,3]
+
+Code:
+ListNode* deleteDuplicates(ListNode* head) {
+        if(head == NULL || head->next == NULL){
+            return head;
+        }
+        
+        ListNode* temp1 = head;
+        ListNode* temp2 = head->next;
+        
+        while(temp2 != NULL){
+            if(temp1->val == temp2->val){
+                ListNode* p = temp2;
+                if(temp2->next != NULL){
+                    temp2 = temp2->next;
+                    temp1->next = temp2;
+                    delete p;
+                }
+                else{
+                    delete p;
+                    temp1->next = NULL;
+                    return head;
+                }
+            }
+            else{
+                temp1 = temp2;
+                temp2 = temp2->next;
+            }
+        }
+        
+        return head;
+}
+
+tc = O(N)
+sc = O(1)
