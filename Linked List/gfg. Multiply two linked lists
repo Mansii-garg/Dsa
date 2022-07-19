@@ -1,0 +1,52 @@
+Given elements as nodes of the two linked lists. The task is to multiply these two linked lists, say L1 and L2. 
+
+Note: The output could be large take modulo 109+7.
+
+Example:
+Input:
+2
+2
+3 2
+1
+2
+3
+1 0 0
+2
+1 0 
+
+Output:
+64
+1000
+
+Explanation:
+Testcase 1: 32*2 = 64.
+Testcase 2: 100*10 = 1000.
+
+Code:
+long long  multiplyTwoLists (Node* l1, Node* l2)
+{
+  //Your code here
+  
+  long long int mod = 1000000007;
+  long long int s1 = 0;
+  long long int s2 = 0;
+  
+  Node* temp1 = l1;
+  Node* temp2 = l2;
+  
+  while(temp1 != NULL){
+      s1 = (s1*10+(temp1->data))%mod;
+      temp1 = temp1->next;
+  }
+  
+  while(temp2 != NULL){
+      s2 = (s2*10+(temp2->data))%mod;
+      temp2 = temp2->next;
+  }
+  
+  long long int ans = (s1*s2)%mod;
+  return ans;
+}
+
+tc = O(N)
+sc = O(1)
