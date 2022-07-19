@@ -1,0 +1,99 @@
+Given Pointer/Reference to the head of the linked list, the task is to Sort the given linked list using Merge Sort.
+Note: If the length of linked list is odd, then the extra node should go in the first list while splitting.
+
+Example 1:
+
+Input:
+N = 5
+value[]  = {3,5,2,4,1}
+Output: 1 2 3 4 5
+Explanation: After sorting the given
+linked list, the resultant matrix
+will be 1->2->3->4->5.
+
+Example 2:
+
+Input:
+N = 3
+value[]  = {9,15,0}
+Output: 0 9 15
+Explanation: After sorting the given
+linked list , resultant will be
+0->9->15.
+
+Code:
+   Node *middleNode(Node *head){
+        if(head==NULL || head->next==NULL)
+        {
+            return head;
+        }
+        Node *slow=head,*fast=head->next;
+        while(fast!=NULL && fast->next!=NULL)
+        {
+            slow=slow->next;
+            fast=fast->next->next;
+        }
+        return slow;
+    }
+    
+    Node* merge(Node* list1, Node* list2){
+        
+        if(list1 == NULL)
+            return list2;
+        
+        if(list2 == NULL)
+            return list1;
+        
+        Node* head = NULL;
+        Node* tail = NULL;
+        Node* h1 = list1;
+        Node* h2 = list2;
+        
+        while(h1 != NULL && h2 != NULL){
+            if(h1->data <= h2->data){
+                if(head == NULL){
+                    head = h1;
+                }
+                if(tail != NULL)
+                    tail->next = h1;
+                tail = h1;
+                h1 = h1->next;
+            }
+            else{
+                if(head == NULL){
+                    head = h2;
+                }
+                if(tail != NULL)
+                    tail->next = h2;
+                tail = h2;
+                h2 = h2->next;
+            }
+        }
+        
+        if(h1 == NULL){
+            tail->next = h2;
+        }
+        if(h2 == NULL){
+            tail->next = h1;
+        }
+        
+        return head;
+    }
+    
+    Node* mergeSort(Node* head){
+        if(head == NULL || head-> next == NULL){
+        return head;
+        }
+        
+        Node* middle = middleNode(head);
+        Node* head1 = middle->next;
+        middle-> next = NULL;
+        
+        head = mergeSort(head);
+        head1 = mergeSort(head1);
+        
+        return merge(head, head1);
+    }
+    
+    tc = O(N*logN)
+    sc = O(N)
